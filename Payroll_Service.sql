@@ -1,0 +1,149 @@
+--UC-1
+Create database payroll_service;
+use payroll_service;
+
+--UC-2
+
+Create table employee_payroll(
+id int primary key identity(1,1),
+name varchar(30),
+salary varchar(30),
+start_date date);
+
+--UC-3
+Insert into employee_payroll values('a','1000','2018-01-01');
+Insert into employee_payroll values('b','1200','2018-01-02');
+Insert into employee_payroll values('c','1300','2018-01-03');
+Insert into employee_payroll values('d','1400','2018-01-04');
+
+--UC-4
+Select * from employee_payroll;
+
+--UC-5 
+Select * from employee_payroll where name = 'b';
+Select * from employee_payroll where start_date between cast('2018-01-01' as date) and GETDATE();
+
+--UC-6
+Alter table employee_payroll
+Add Gender Char(1);
+
+update employee_payroll set Gender = 'M' where id in (1,4);
+update employee_payroll set Gender = 'F' where id between 2 and 3;
+
+--UC7
+Select sum(cast(salary as bigint)) from employee_payroll; 
+Select Avg(cast(salary as bigint)) from employee_payroll; 
+Select min(cast(salary as bigint)) from employee_payroll; 
+Select max(cast(salary as bigint)) from employee_payroll;
+Select * from employee_payroll;
+Select Gender,count(*) from employee_payroll group by(Gender); 
+
+--UC8
+ALTER TABLE employee_payroll
+ADD  Phone VARCHAR(10), Address VARCHAR(30), Department VARCHAR(20) ;
+
+--UC9
+ALTER TABLE employee_payroll
+Add Basic_pay bigint, Deductions bigint, Taxable_pay bigint,Income_Tax bigint, Net_pay bigint;
+
+--UC10
+Insert into employee_payroll(name, salary,start_date,Gender,Phone,Address,Department,Basic_pay,Deductions,Taxable_pay,Income_Tax,Net_pay) Values ('Terisa','1500','2018-01-01','F','1234567890','Chennai','Sales',
+'1400','100','200','1350','1351');
+
+Insert into employee_payroll(name, salary,start_date,Gender,Phone,Address,Department,Basic_pay,Deductions,Taxable_pay,Income_Tax,Net_pay) Values ('Terisa','1500','2018-01-02','F','1234567890','Chennai','marketing',
+'1400','100','200','1350','1351');
+
+--UC11
+ 
+
+Create TABLE Salary(	
+SalID int primary key identity(501,1),
+Salary bigint,
+ Basic_pay bigint, 
+ Deductions bigint, 
+ Taxable_pay bigint,
+ Income_Tax bigint, 
+ Net_pay bigint);
+
+ Create table Department (
+ DeptID int primary key identity(101,1),
+ Dept_Name varchar (20)
+ );
+
+ Create table Employee(
+ id int primary key identity(1001,1),
+name varchar(30),
+start_date date,
+Phone VARCHAR(10),
+ Address VARCHAR(30), 
+ SalID int Foreign key References salary(SalID) );
+
+ Create table emp_department_mapping(
+id int primary key identity(1,1),
+EmpID int Foreign Key References Employee(id),
+DeptID int  Foreign Key References Department(DeptID)
+);
+
+
+Select * from Salary;
+Select * from Department;
+Select * from Employee;
+Select * from emp_department_mapping;
+
+--PRACTICE
+insert into Department  values ('Developer');
+insert into Salary values ('10000','8000','2000','1000','500','8500');
+insert into Salary values ('20000','18000','2000','1000','500','18500');
+insert into Salary values ('30000','28000','2000','1000','500','28500');
+insert into Salary values ('40000','88000','2000','1000','500','38500');
+
+insert into Employee values ('shrey','2018-01-01','8787878787','Chennai',504);
+insert into Employee values ('Verma','2018-02-01','8712121287','Pune',503);
+insert into Employee values ('Guna','2018-01-06','8712345687','Mumbai',501);
+insert into Employee values ('Nithin','2016-01-01','8765432187','Delhi',503);
+insert into Employee values ('prasanna','2017-01-01','8711111187','Chennai',502);
+insert into Employee values ('Mukesh','2017-01-01','8722211187','Ladakh',501);
+
+
+insert into emp_department_mapping values (1001,104);
+insert into emp_department_mapping values (1002,103);
+insert into emp_department_mapping values (1003,102);
+insert into emp_department_mapping values (1004,104);
+insert into emp_department_mapping values (1005,101);
+
+Select Dept_Name as Designation from Department;
+SELECT id, Address +  ' ' + name  AS Details FROM Employee;
+
+--Inner joins
+SELECT Employee.id, Employee.name, Salary.Basic_pay,Salary.Salary,Employee.Phone FROM Salary FULL JOIN Employee ON Employee.SalID =Salary.SalID;
+SElect * from Salary INNER Join Employee on Employee.SalID =Salary.SalID;
+--Practice questions
+SELECT Distinct * FROM Employee , Salary ;
+SELECT UPPER(name) AS EmpName FROM Employee;
+Select count(id) from Employee;
+select GETDATE();
+SELECT SUBSTRING(name, 1, 4) FROM Employee;
+SELECT REPLACE('Shrey', 'y', 'yy');
+SELECT * INTO NewTable FROM Employee ;
+drop table NewTable;
+select * from NewTable;
+
+
+use PersonDetails;
+create table Person(
+id int primary key identity(1,1),
+name varchar(max),
+salary bigint,
+address varchar(max),
+phonenumber varchar(10)
+);
+select * from person;
+Insert into Person values('a',20000,'Chennai','6368888889');
+Insert into Person values('b',20000,'Chennai','6368888889');
+Insert into Person values('c',20000,'Chennai','6368888889');
+Insert into Person values('d',20000,'Chennai','6368888889');
+Insert into Person values('e',20000,'Chennai','6368888889');
+Insert into Person values('f',20000,'Chennai','6368888889');
+
+
+
