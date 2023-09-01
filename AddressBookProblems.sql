@@ -110,16 +110,17 @@ Insert into Type values('Profession');
 Insert into Type values('Others');
 
 select * from Type
+select * from AddressBook;
 
-Alter table AddressBook
-Add type varchar(20);
 
 --UC10
 Create Procedure CountByType
 As
 Begin
-Select type, count(*) as count from AddressBook group by type 
+Select Relation, count(Relation) as count from AddressBook group by Relation ;
 End
+
+exec CountByType;
 
 --UC11
 Create Procedure AddValues(
