@@ -62,4 +62,6 @@ exec   DeleteEmployee @id = 2;
 execute UpdateEmployee (3,'shrey','up','asdff');
 exec UpdateEmployee @Id=3,@Name = 'reddy',@City = 'andhra',@Address = 'adfas';
 
+select * from Employee;
+
 

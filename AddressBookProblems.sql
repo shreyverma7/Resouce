@@ -18,6 +18,13 @@ email varchar(30),
 --UC3
 select * from AddressBook;
 --Create Stored Procedures
+create Procedure AllDetails
+As
+Begin
+select * from AddressBook;
+end
+
+Delete from AddressBook where Id in (9);
 create Procedure AddContactDetails
 (
 @firstName varchar(20),
@@ -27,10 +34,11 @@ create Procedure AddContactDetails
 @state varchar(20),
 @zip bigint,
 @phonenumber varchar(10), 
-@email varchar(30) 
+@email varchar(30),
+@Relation varchar(30) 
 )
 As
-begin insert Into AddressBook values(@firstName,@lastName,@address,@city,@state,@zip,@phonenumber,@email)
+begin insert Into AddressBook values(@firstName,@lastName,@address,@city,@state,@zip,@phonenumber,@email,@Relation)
 End
  
 --UC4
@@ -42,11 +50,12 @@ Create Procedure EditContactDetails(
 @state varchar(20),
 @zip bigint,
 @phonenumber varchar(10), 
-@email varchar(30) 
+@email varchar(30),
+@Relation varchar(30)  
 )
 As
 begin
-update AddressBook set firstName=@firstName,lastName=@lastName,address=@address,city=@city,state=@state,zip=@zip,phone=@phonenumber,email=@email where firstName=@firstName
+update AddressBook set firstName=@firstName,lastName=@lastName,address=@address,city=@city,state=@state,zip=@zip,phone=@phonenumber,email=@email,Relation= @Relation  where firstName=@firstName
 End
 
 --UC5
@@ -123,13 +132,41 @@ End
 exec CountByType;
 
 --UC11
-Create Procedure AddValues(
-@Contactid int,
-@Typeid int
-)
-As
-Begin
-Insert into AddressBook values(@Contactid,@Typeid)
-End
+CREATE PROCEDURE AddPersonToFriendAndFamily
+    @PersonName NVARCHAR(255),
+    @AddToFriend BIT,
+    @AddToFamily BIT
+AS
+BEGIN
+    IF @AddToFriend = 1
+    BEGIN
+        INSERT INTO AddressBook (firstName, Relation)
+        VALUES (@PersonName, 'Friend');
+    END
 
-Select * from AddressBook
+    IF @AddToFamily = 1
+    BEGIN
+        INSERT INTO AddressBook (firstName, Relation)
+        VALUES (@PersonName, 'Family');
+    END
+END;
+
+EXEC AddPersonToFriendAndFamily @PersonName = 'readdy', @AddToFriend = 0, @AddToFamily = 1;
+--problem above is
+
+--UC11
+CREATE PROCEDURE CopyDataWithDifferentRelation
+    @FirstName NVARCHAR(255),
+    @NewRelation NVARCHAR(255)
+AS
+BEGIN
+    INSERT INTO AddressBook (FirstName, LastName, Address, City, State, Zip, Phone, Email, Relation)
+    SELECT FirstName, LastName, Address, City, State, Zip, Phone, Email, @NewRelation AS Relation
+    FROM AddressBook
+    WHERE FirstName = @FirstName;
+END;
+
+  INSERT INTO AddressBook (FirstName, LastName, Address, City, State, Zip, Phone, Email, Relation)
+    SELECT FirstName, LastName, Address, City, State, Zip, Phone, Email, 'Others' AS Relation
+    FROM AddressBook
+    WHERE FirstName = 'kanha';
