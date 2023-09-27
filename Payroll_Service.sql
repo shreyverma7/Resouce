@@ -53,6 +53,60 @@ Insert into employee_payroll(name, salary,start_date,Gender,Phone,Address,Depart
 Insert into employee_payroll(name, salary,start_date,Gender,Phone,Address,Department,Basic_pay,Deductions,Taxable_pay,Income_Tax,Net_pay) Values ('Terisa','1500','2018-01-02','F','1234567890','Chennai','marketing',
 '1400','100','200','1350','1351');
 
+--stored procedure
+Create procedure AddEmployee 
+(
+	@name varchar(20),
+	 @salary varchar(20), 
+	 @start_date Date,
+	 @Gender char(1) ,
+	 @Phone VARCHAR(10), 
+	 @Address VARCHAR(30), 
+	 @Department VARCHAR(20),
+	 @Basic_pay bigint, 
+	 @Deductions bigint, 
+	 @Taxable_pay bigint,
+	@Income_Tax bigint, 
+	 @Net_pay bigint)
+	 As
+Begin 
+Insert into employee_payroll values (@name,@salary,@start_date,@Gender,@Phone,@Address,@Department,@Basic_pay,@Deductions,@Taxable_pay,@Income_Tax,@Net_pay);
+End
+
+Create procedure UpdateEmployee
+(
+@Id int,
+@name varchar(20),
+@salary varchar(20),
+@Phone varchar(30)
+)
+As 
+Begin
+Update employee_payroll set name= @name, salary = @salary , Phone= @Phone where id= @Id
+End
+
+Create procedure DeleteEmployee
+( 
+@Id int
+ )
+As
+Begin
+Delete from employee_payroll where id =@Id
+End
+
+ Create procedure GetAllEmployees
+As
+Begin
+Select * from employee_payroll
+End
+ 
+
+EXEC AddEmployee @name ='Terisa',@salary='1500',@start_date='2018-01-02',@Gender='F',@Phone='1234567890',@Address='Chennai',@Department='marketing',
+@Basic_pay='1400',@Deductions='100',@Taxable_pay='200',@Income_Tax='1350',@Net_pay='1351';
+EXEC UpdateEmployee @Id =7, @name = 'shrey',@salary = '12342',@Phone = '1234565434';
+EXEC DeleteEmployee @Id = 5;
+EXEC GetAllEmployees ;
+
 --UC11
  
 
@@ -146,4 +200,52 @@ Insert into Person values('e',20000,'Chennai','6368888889');
 Insert into Person values('f',20000,'Chennai','6368888889');
 
 
+--stored procedure 25/09
+Create procedure sp_GetEmployee
+(
+@id int
+)
+as 
+Begin try
+select * from employee_payroll where id = @id;
+End try
+BEGIN CATCH
+SELECT
+ERROR_NUMBER() AS ErrorNumber,
+ERROR_STATE() AS ErrorState,
+ERROR_PROCEDURE() AS ErrorProcedure,
+ERROR_LINE() AS ErrorLine,
+ERROR_MESSAGE() AS ErrorMessage;
+END CATCH
 
+exec sp_GetEmployee @id = 2;
+select * from employee_payroll;
+
+--function
+Create function fun_GetAllEmployees()
+returns table
+as
+return (select * from employee_payroll)
+
+select * from fun_GetAllEmployees();
+
+
+Create function fun_Join_Column
+(
+@id int,
+@name varchar(20),
+@Gender varchar(1)
+) 
+Returns varchar(100)
+As
+Begin
+Return (select @id+''+@name+''+ @Gender)
+End
+
+select * from fun_Join_Column(1, 'a','M');
+
+--26/09 inbuilt function
+Select MAX(salary) as max_salary from employee_payroll;
+Select MIN(salary) from employee_payroll;
+Select AVG(Basic_pay) from employee_payroll;
+Select SUM(Basic_pay) from employee_payroll;
